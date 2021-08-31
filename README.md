@@ -15,7 +15,10 @@ Developed using Tensorflow 2.4, which is compatible with Python 3.6-3.8, CUDA 11
 7. Download and extract the preprocessed ESM data:  ```$ python download_data.py```
 
 ## Training (high-resolution)
+Run ```$ train.py``` to train the model below on the high-resolution (f09) data using the default settings. 
+The experiment will be saved under ```experiments/single-res```.
 
-## Training (multi-resolution)
+![alt_txt](resources/arch.png)
 
+Code for multi-resolution training and plotting to be uploaded soon...
 
