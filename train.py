@@ -9,6 +9,7 @@ from datetime import datetime
 import yaml
 from time import time
 import pickle
+from utils.plots import plot_predictions
 
 
 def f09_model(in_c, out_c):
@@ -84,10 +85,10 @@ if __name__ == '__main__':
     print('test x shape:', test_x.shape)
     print('test y shape:', test_y.shape)
 
-    exp_name = osp.join(args.exp_dir, datetime.now().strftime("%Y-%m-%d-%H-%M"))
-    os.makedirs(exp_name)
+    exp_dir = osp.join(args.exp_dir, datetime.now().strftime("%Y-%m-%d-%H-%M"))
+    os.makedirs(exp_dir)
 
-    with open(osp.join(exp_name, 'args.yaml'), 'w') as f:
+    with open(osp.join(exp_dir, 'args.yaml'), 'w') as f:
         yaml.safe_dump(vars(args), f)
 
     train_ds = tf.data.Dataset.from_tensor_slices((train_x, train_y)).shuffle(100).repeat().batch(args.batch)
@@ -112,7 +113,7 @@ if __name__ == '__main__':
     print('Validation Loss: {:.6}'.format(hist.history['val_loss'][-1]))
     print('Validation MSE: {:.6f}'.format(hist.history['val_mse'][-1]))
 
-    model.save(osp.join(exp_name, 'model.h5'))
+    model.save(osp.join(exp_dir, 'model.h5'))
 
     meta = {'train_loss': hist.history['loss'],
             'train_mse': hist.history['mse'],
@@ -121,4 +122,14 @@ if __name__ == '__main__':
             'test_idx': test_idx,
             'training_time': t}
 
-    pickle.dump(meta, open(osp.join(exp_name, 'meta.pkl'), 'wb'))
+    pickle.dump(meta, open(osp.join(exp_dir, 'meta.pkl'), 'wb'))
+
+    preds = model.predict(test_x)
+
+    print('Plotting predictions...')
+    # first test sample only
+    plot_predictions(preds[:1], exp_dir,
+                     sample_ids=test_idx[:1],
+                     gt=test_y[:1],
+                     out_names=['AOD', 'CLDL', 'FNET', 'LWCF', 'PRECT', 'QRL', 'SWCF'])
+

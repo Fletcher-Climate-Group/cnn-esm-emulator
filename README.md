@@ -12,7 +12,8 @@ Developed using Tensorflow 2.4, which is compatible with Python 3.6-3.8, CUDA 11
 4. Clone this repo: ```$ git clone https://github.com/Fletcher-Climate-Group/cnn-esm-emulator.git```
 5. Install the dependencies: ```$ cd cnn-esm-emulator && pip install -r requirements.txt```
 6. Optionally follow steps to setup [TensorFlow for GPU](https://www.tensorflow.org/install/gpu)
-7. Download and extract the preprocessed ESM data:  ```$ python download_data.py```
+7. Install the cartopy package via conda for plotting: ```$ conda install -c conda-forge cartopy```
+8. Download and extract the preprocessed ESM data:  ```$ python download_data.py```
 
 ## Training (high-resolution)
 Run ```$ train.py``` to train the model below on the high-resolution (f09) data using the default settings. 
@@ -20,5 +21,17 @@ The experiment will be saved under ```experiments/single-res```.
 
 ![alt_txt](resources/arch.png)
 
-Code for multi-resolution training and plotting to be uploaded soon...
+Sample predictions from the trained model are shown below:
+
+| Output  | Prediction | Ground-Truth |
+| --- | --- | --- |
+| AOD  | ![alt_txt](resources/sample_plots/sample26_AOD.png) | ![alt_txt](resources/sample_plots/sample26_AOD_gt.png) |
+| CLDL | ![alt_txt](resources/sample_plots/sample26_CLDL.png) | ![alt_txt](resources/sample_plots/sample26_CLDL_gt.png) |
+| FNET | ![alt_txt](resources/sample_plots/sample26_FNET.png) | ![alt_txt](resources/sample_plots/sample26_FNET_gt.png) |
+| LWCF | ![alt_txt](resources/sample_plots/sample26_LWCF.png) | ![alt_txt](resources/sample_plots/sample26_LWCF_gt.png) |
+| PRECT | ![alt_txt](resources/sample_plots/sample26_PRECT.png) | ![alt_txt](resources/sample_plots/sample26_PRECT_gt.png) |
+| QRL | ![alt_txt](resources/sample_plots/sample26_QRL.png) | ![alt_txt](resources/sample_plots/sample26_QRL_gt.png) |
+| SWCF | ![alt_txt](resources/sample_plots/sample26_SWCF.png) | ![alt_txt](resources/sample_plots/sample26_SWCF_gt.png) |
+
+Code for multi-resolution training to be uploaded soon...
 
