@@ -21,7 +21,7 @@ The experiment will be saved under ```experiments/single-res```.
 
 ![alt_txt](resources/arch.png)
 
-Sample predictions from the trained model are shown below:
+Sample test predictions from the trained model are shown below:
 
 | Output  | Prediction | Ground-Truth |
 | --- | --- | --- |
