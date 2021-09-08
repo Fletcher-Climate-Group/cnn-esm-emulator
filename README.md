@@ -1,7 +1,7 @@
 # CNN ESM Emulator
 
 Official code repository for the paper: [Toward efficient calibration of higher-resolution Earth System Models](https://www.climatechange.ai/papers/icml2021/51), 
-presented at ICML 2021 Climate Change AI workshop.
+presented at the ICML 2021 Workshop on Tackling Climate Change with Machine Learning.
 
 Developed using Tensorflow 2.4, which is compatible with Python 3.6-3.8, CUDA 11.0, and cudnn 8.0.
 
