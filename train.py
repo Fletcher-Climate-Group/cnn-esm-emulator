@@ -10,6 +10,7 @@ import yaml
 from time import time
 import pickle
 from utils.plots import plot_predictions
+from utils.loss import ss_loss
 
 
 def f09_model(in_c, out_c):
@@ -44,17 +45,6 @@ def f09_model(in_c, out_c):
     model.add(layers.Conv2DTranspose(out_c, (5, 5), strides=(2, 2), padding='same'))
 
     return model
-
-
-@tf.function
-def ss_loss(gt, pred, reduce_mean=True):
-    gt_mean = tf.reduce_mean(gt, axis=[1, 2], keepdims=True)
-    MSE = tf.reduce_mean((gt-pred)**2, axis=[1, 2])
-    MSE_norm = tf.reduce_mean((gt_mean - pred)**2, axis=[1, 2])
-    if reduce_mean:
-        return tf.reduce_mean(MSE / MSE_norm)
-    else:
-        return MSE / MSE_norm
 
 
 if __name__ == '__main__':
@@ -128,7 +118,8 @@ if __name__ == '__main__':
 
     print('Plotting predictions...')
     # first test sample only
-    plot_predictions(preds[:1], exp_dir,
+    plot_predictions(x=preds[:1],
+                     plot_dir=osp.join(exp_dir, 'plots'),
                      sample_ids=test_idx[:1],
                      gt=test_y[:1],
                      out_names=['AOD', 'CLDL', 'FNET', 'LWCF', 'PRECT', 'QRL', 'SWCF'])

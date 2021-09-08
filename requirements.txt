@@ -1,3 +1,10 @@
 tensorflow==2.4.0
 pandas
 pyyaml
+
+# for xesmf (patch and conservative regridding)
+# esmpy
+# xarray
+# scipy
+# dask
+# netCDF4
