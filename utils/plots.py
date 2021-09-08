@@ -232,7 +232,3 @@ def plot_feature_importance(exp_dir, nhr_scores, out_names=None, ext='pdf'):
             os.makedirs(plot_dir, exist_ok=True)
             plt.savefig(osp.join(plot_dir, 'feature_importance_nhr{}.{}'.format(nhr_scores, ext)))
 
-
-if __name__ == '__main__':
-    plot_feature_importance('../experiments/multi-res/2021-09-08-12-37', 40, out_names=['AOD', 'CLDL', 'FNET', 'LWCF', 'PRECT', 'QRL', 'SWCF'], ext='png')
-
