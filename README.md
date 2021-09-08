@@ -49,8 +49,8 @@ The full experiment trains 600 models, and therefore requires ~1 GPU day.
 A shorter demo experiment (~0.5 GPU hours) can be run using the following command:<br />
 ```$ train_multi_res.py --n-hr 0 20 40 --n-trials 4 --n-gpu 2 --save-models```
 
-The of experiment will be saved under ```experiments/multi-res```. 
-Plots of the mean errors for each value ```n_hr```:
+The experiment will be saved under ```experiments/multi-res```. 
+Plots of the mean errors for each value of ```n_hr```:
 
 | Output | ```n_hr = 0``` | ```n_hr = 20``` | ```n_hr = 40``` |
 | --- | --- | --- | --- |
