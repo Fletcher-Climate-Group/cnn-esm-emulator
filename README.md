@@ -13,7 +13,7 @@ Developed using Tensorflow 2.4, which is compatible with Python 3.6-3.8, CUDA 11
 5. Install the dependencies: ```$ cd cnn-esm-emulator && pip install -r requirements.txt```
 6. Optionally follow steps to setup [TensorFlow for GPU](https://www.tensorflow.org/install/gpu)
 7. Install the cartopy package via conda for plotting: ```$ conda install -c conda-forge cartopy```
-8. Download and extract the preprocessed ESM data:  ```$ python download_data.py```
+8. Download and extract the preprocessed ESM data:  ```$ sh download_data.sh```
 
 ## Training (high-resolution)
 Run ```$ train.py``` to train the model below on the high-resolution (f09) data using the default settings. 

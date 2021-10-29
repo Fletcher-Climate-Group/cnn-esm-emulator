@@ -1,6 +1,10 @@
 tensorflow==2.4.0
 pandas
 pyyaml
+gdown
+torch
+tqdm
+torchsummary
 
 # for xesmf (patch and conservative regridding)
 # esmpy
