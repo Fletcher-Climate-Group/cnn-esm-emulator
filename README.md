@@ -27,13 +27,13 @@ Sample test predictions from the trained model are shown below:
 
 | Output  | Prediction | Ground-Truth |
 | --- | --- | --- |
-| AOD  | ![alt_txt](resources/sample_plots_single_res/sample26_AOD.png) | ![alt_txt](resources/sample_plots_single_res/sample26_AOD_gt.png) |
-| CLDL | ![alt_txt](resources/sample_plots_single_res/sample26_CLDL.png) | ![alt_txt](resources/sample_plots_single_res/sample26_CLDL_gt.png) |
-| FNET | ![alt_txt](resources/sample_plots_single_res/sample26_FNET.png) | ![alt_txt](resources/sample_plots_single_res/sample26_FNET_gt.png) |
-| LWCF | ![alt_txt](resources/sample_plots_single_res/sample26_LWCF.png) | ![alt_txt](resources/sample_plots_single_res/sample26_LWCF_gt.png) |
-| PRECT | ![alt_txt](resources/sample_plots_single_res/sample26_PRECT.png) | ![alt_txt](resources/sample_plots_single_res/sample26_PRECT_gt.png) |
-| QRL | ![alt_txt](resources/sample_plots_single_res/sample26_QRL.png) | ![alt_txt](resources/sample_plots_single_res/sample26_QRL_gt.png) |
-| SWCF | ![alt_txt](resources/sample_plots_single_res/sample26_SWCF.png) | ![alt_txt](resources/sample_plots_single_res/sample26_SWCF_gt.png) |
+| AOD  | ![alt_txt](resources/tf_sample_plots_single_res/sample26_AOD.png) | ![alt_txt](resources/tf_sample_plots_single_res/sample26_AOD_gt.png) |
+| CLDL | ![alt_txt](resources/tf_sample_plots_single_res/sample26_CLDL.png) | ![alt_txt](resources/tf_sample_plots_single_res/sample26_CLDL_gt.png) |
+| FNET | ![alt_txt](resources/tf_sample_plots_single_res/sample26_FNET.png) | ![alt_txt](resources/tf_sample_plots_single_res/sample26_FNET_gt.png) |
+| LWCF | ![alt_txt](resources/tf_sample_plots_single_res/sample26_LWCF.png) | ![alt_txt](resources/tf_sample_plots_single_res/sample26_LWCF_gt.png) |
+| PRECT | ![alt_txt](resources/tf_sample_plots_single_res/sample26_PRECT.png) | ![alt_txt](resources/tf_sample_plots_single_res/sample26_PRECT_gt.png) |
+| QRL | ![alt_txt](resources/tf_sample_plots_single_res/sample26_QRL.png) | ![alt_txt](resources/tf_sample_plots_single_res/sample26_QRL_gt.png) |
+| SWCF | ![alt_txt](resources/tf_sample_plots_single_res/sample26_SWCF.png) | ![alt_txt](resources/tf_sample_plots_single_res/sample26_SWCF_gt.png) |
 
 ### Training (multi-resolution)
 **GPU(s) required.**
@@ -56,13 +56,13 @@ Plots of the mean errors for each value of ```n_hr```:
 
 | Output | ```n_hr = 0``` | ```n_hr = 20``` | ```n_hr = 40``` |
 | --- | --- | --- | --- |
-| FNET | ![alt_txt](resources/sample_plots_multi_res/nhr0_FNET_error.png) | ![alt_txt](resources/sample_plots_multi_res/nhr20_FNET_error.png) | ![alt_txt](resources/sample_plots_multi_res/nhr40_FNET_error.png) |
-| PRECT |  ![alt_txt](resources/sample_plots_multi_res/nhr0_PRECT_error.png) | ![alt_txt](resources/sample_plots_multi_res/nhr20_PRECT_error.png) | ![alt_txt](resources/sample_plots_multi_res/nhr40_PRECT_error.png) |
+| FNET | ![alt_txt](resources/tf_sample_plots_multi_res/nhr0_FNET_error.png) | ![alt_txt](resources/tf_sample_plots_multi_res/nhr20_FNET_error.png) | ![alt_txt](resources/tf_sample_plots_multi_res/nhr40_FNET_error.png) |
+| PRECT |  ![alt_txt](resources/tf_sample_plots_multi_res/nhr0_PRECT_error.png) | ![alt_txt](resources/tf_sample_plots_multi_res/nhr20_PRECT_error.png) | ![alt_txt](resources/tf_sample_plots_multi_res/nhr40_PRECT_error.png) |
 
 The feature importance scores are produced by shuffling each input feature and evaluating the loss in skill score as a result. 
 Here are the feature importance scores at ```n_hr = 40```:
 
-![alt_txt](resources/sample_plots_multi_res/feature_importance_nhr40.png)
+![alt_txt](resources/tf_sample_plots_multi_res/feature_importance_nhr40.png)
 
 
 
