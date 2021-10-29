@@ -15,9 +15,11 @@ Developed using Tensorflow 2.4, which is compatible with Python 3.6-3.8, CUDA 11
 7. Install the cartopy package via conda for plotting: ```$ conda install -c conda-forge cartopy```
 8. Download and extract the preprocessed ESM data:  ```$ sh download_data.sh```
 
-## Training (high-resolution)
-Run ```$ train.py``` to train the model below on the high-resolution (f09) data using the default settings. 
-The experiment will be saved under ```experiments/single-res```.
+
+## TensorFlow
+### Training (high-resolution)
+Run ```$ python tf/train.py``` to train the model below on the high-resolution (f09) data using the default settings. 
+The experiment will be saved under ```tf/experiments/single-res```.
 
 ![alt_txt](resources/arch.png)
 
@@ -33,7 +35,7 @@ Sample test predictions from the trained model are shown below:
 | QRL | ![alt_txt](resources/sample_plots_single_res/sample26_QRL.png) | ![alt_txt](resources/sample_plots_single_res/sample26_QRL_gt.png) |
 | SWCF | ![alt_txt](resources/sample_plots_single_res/sample26_SWCF.png) | ![alt_txt](resources/sample_plots_single_res/sample26_SWCF_gt.png) |
 
-## Training (multi-resolution)
+### Training (multi-resolution)
 **GPU(s) required.**
 In this experiment, the model depicted above is trained using the low resolution (f45 and f19) ESM data, 
 and ```n_hr``` samples from the high resolution (f09) ESM. 
@@ -49,7 +51,7 @@ The full experiment trains 600 models, and therefore requires ~1 GPU day.
 A shorter demo experiment (~0.5 GPU hours) can be run using the following command:<br />
 ```$ train_multi_res.py --n-hr 0 20 40 --n-trials 4 --n-gpu 2 --save-models```
 
-The experiment will be saved under ```experiments/multi-res```. 
+The experiment will be saved under ```tf/experiments/multi-res```. 
 Plots of the mean errors for each value of ```n_hr```:
 
 | Output | ```n_hr = 0``` | ```n_hr = 20``` | ```n_hr = 40``` |

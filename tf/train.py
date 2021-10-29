@@ -50,7 +50,7 @@ def f09_model(in_c, out_c):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data-dir', default='data')
-    parser.add_argument('--exp-dir', default='experiments/single-res')
+    parser.add_argument('--exp-dir', default='tf/experiments/single-res')
     parser.add_argument('--batch', type=int, default=8)
     parser.add_argument('--lr', type=float, default=0.01)
     parser.add_argument('--epochs', type=int, default=500)

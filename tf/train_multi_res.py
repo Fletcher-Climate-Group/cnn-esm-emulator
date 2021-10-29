@@ -94,7 +94,7 @@ def train_multi_res(cfg):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data-dir', default='data')
-    parser.add_argument('--exp-dir', default='experiments/multi-res')
+    parser.add_argument('--exp-dir', default='tf/experiments/multi-res')
     parser.add_argument('--n-gpus', type=int, default=4)
     parser.add_argument('--resize', default='bilinear')
     parser.add_argument('--res-ids', nargs='+', type=float, default=[1, 1/4, 1/16])
