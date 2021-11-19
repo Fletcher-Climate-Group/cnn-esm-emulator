@@ -1,3 +1,8 @@
+import sys
+from pathlib import Path
+FILE = Path(__file__).absolute()
+sys.path.append(FILE.parents[1].as_posix())  # add project folder to path
+
 import tensorflow as tf
 from tensorflow.keras import layers
 import argparse
@@ -9,8 +14,8 @@ from datetime import datetime
 import yaml
 from time import time
 import pickle
-from utils.plots import plot_predictions
-from utils.loss import ss_loss
+from utils.plots import plot_predictions, plot_losses
+from utils.losses import ss_loss
 
 
 def f09_model(in_c, out_c):
@@ -50,7 +55,7 @@ def f09_model(in_c, out_c):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data-dir', default='data')
-    parser.add_argument('--exp-dir', default='tf/experiments/single-res')
+    parser.add_argument('--exp-dir', default='experiments/tf/single-res')
     parser.add_argument('--batch', type=int, default=8)
     parser.add_argument('--lr', type=float, default=0.01)
     parser.add_argument('--epochs', type=int, default=500)
@@ -116,11 +121,12 @@ if __name__ == '__main__':
 
     preds = model.predict(test_x)
 
-    print('Plotting predictions...')
-    # first test sample only
-    plot_predictions(x=preds[:1],
-                     plot_dir=osp.join(exp_dir, 'plots'),
+    print('Making plots...')
+    plot_dir = osp.join(exp_dir, 'plots')
+    plot_predictions(x=preds[:1],  # first test sample
+                     plot_dir=plot_dir,
                      sample_ids=test_idx[:1],
                      gt=test_y[:1],
                      out_names=['AOD', 'CLDL', 'FNET', 'LWCF', 'PRECT', 'QRL', 'SWCF'])
 
+    plot_losses(meta['train_loss'], meta['val_loss'], plot_dir, loss_name=args.loss, start_idx=10, title='TensorFlow')

@@ -13,7 +13,7 @@ import pickle
 from datetime import datetime
 from utils.data import get_data_lr_hr
 from utils.plots import plot_multi_res_error, plot_feature_importance
-from utils.loss import ss_loss
+from utils.losses import ss_loss
 import sys
 
 
@@ -94,7 +94,7 @@ def train_multi_res(cfg):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data-dir', default='data')
-    parser.add_argument('--exp-dir', default='tf/experiments/multi-res')
+    parser.add_argument('--exp-dir', default='experiments/tf/multi-res')
     parser.add_argument('--n-gpus', type=int, default=4)
     parser.add_argument('--resize', default='bilinear')
     parser.add_argument('--res-ids', nargs='+', type=float, default=[1, 1/4, 1/16])

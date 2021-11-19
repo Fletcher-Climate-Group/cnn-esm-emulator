@@ -19,7 +19,7 @@ Originally implemented using TensorFlow 2.4. New PyTorch implementation also pro
 ## TensorFlow
 ### Training (high-resolution)
 Run ```$ python tf/train.py``` to train the model below on the high-resolution (f09) data using the default settings. 
-The experiment will be saved under ```tf/experiments/single-res```.
+The experiment will be saved under ```experiments/tf/single-res```.
 
 ![alt_txt](resources/arch.png)
 
@@ -51,7 +51,7 @@ The full experiment trains 600 models, and therefore requires ~1 GPU day.
 A shorter demo experiment (~0.5 GPU hours) can be run using the following command:<br />
 ```$ train_multi_res.py --n-hr 0 20 40 --n-trials 4 --n-gpu 2 --save-models```
 
-The experiment will be saved under ```tf/experiments/multi-res```. 
+The experiment will be saved under ```experiments/tf/multi-res```. 
 Plots of the mean errors for each value of ```n_hr```:
 
 | Output | ```n_hr = 0``` | ```n_hr = 20``` | ```n_hr = 40``` |
@@ -64,11 +64,25 @@ Here are the feature importance scores at ```n_hr = 40```:
 
 ![alt_txt](resources/tf_sample_plots_multi_res/feature_importance_nhr40.png)
 
+## PyTorch (Probabilistic Model)
+**Warning:** This section is experimental and is under active development.
+### Training (high-resolution)
+Replication of the high-res TensorFlow experiment. Run ```$ python pt/train.py --name f09 --predict``` to train the model below on the high-resolution (f09) data using the default settings. 
+The experiment will be saved under ```experiments/pt/single-res```.
 
+For the probabilistic model:  `$ python pt/train.py --name f09-prob --prob --predict`
 
+Sample probabilistic predictions shown with mean and standard deviation below:
 
-
-
+| Output | Ground-Truth  | Mean Prediction | Standard Deviation Prediction |
+| --- | --- | --- | --- |
+| AOD  | ![alt_txt](resources/tf_sample_plots_single_res/sample26_AOD_gt.png) | ![alt_txt](resources/pt_sample_plots_single_res/mean26_AOD.png) | ![alt_txt](resources/pt_sample_plots_single_res/sigma26_AOD.png) |
+| CLDL | ![alt_txt](resources/tf_sample_plots_single_res/sample26_CLDL_gt.png) | ![alt_txt](resources/pt_sample_plots_single_res/mean26_CLDL.png) | ![alt_txt](resources/pt_sample_plots_single_res/sigma26_CLDL.png) |
+| FNET | ![alt_txt](resources/tf_sample_plots_single_res/sample26_FNET_gt.png) | ![alt_txt](resources/pt_sample_plots_single_res/mean26_FNET.png) | ![alt_txt](resources/pt_sample_plots_single_res/sigma26_FNET.png) |
+| LWCF | ![alt_txt](resources/tf_sample_plots_single_res/sample26_LWCF_gt.png) | ![alt_txt](resources/pt_sample_plots_single_res/mean26_LWCF.png) | ![alt_txt](resources/pt_sample_plots_single_res/sigma26_LWCF.png) |
+| PRECT | ![alt_txt](resources/tf_sample_plots_single_res/sample26_PRECT_gt.png) | ![alt_txt](resources/pt_sample_plots_single_res/mean26_PRECT.png) | ![alt_txt](resources/pt_sample_plots_single_res/sigma26_PRECT.png) |
+| QRL | ![alt_txt](resources/tf_sample_plots_single_res/sample26_QRL_gt.png) | ![alt_txt](resources/pt_sample_plots_single_res/mean26_QRL.png) | ![alt_txt](resources/pt_sample_plots_single_res/sigma26_QRL.png) |
+| SWCF | ![alt_txt](resources/tf_sample_plots_single_res/sample26_SWCF_gt.png) | ![alt_txt](resources/pt_sample_plots_single_res/mean26_SWCF.png) | ![alt_txt](resources/pt_sample_plots_single_res/sigma26_SWCF.png) |
 
 
 

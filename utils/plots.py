@@ -9,19 +9,22 @@ import argparse
 import yaml
 from utils.data import get_data_lr_hr
 import tensorflow as tf
-from utils.loss import ss_loss
+from utils.losses import ss_loss
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
 
-def plot_map(x, figsize, save_path, cbar=True, error=False):
+def plot_map(x, figsize, save_path, cbar=True, error=False, set_bounds=True):
     assert len(x.shape) == 2, 'can only plot 2d map, len(x.shape) != 2'
     plt.figure(figsize=figsize)
     ax = plt.axes(projection=ccrs.Mollweide(central_longitude=180))
-    if error:
-        vmin, vmax = -0.2, 0.2
+    if set_bounds:
+        if error:
+            vmin, vmax = -0.2, 0.2
+        else:
+            vmin, vmax = 0, 1
     else:
-        vmin, vmax = 0, 1
+        vmin, vmax = None, None
     im = ax.imshow(x,
         transform=ccrs.PlateCarree(central_longitude=180),
         extent=[-180, 180, -90, 90],
@@ -36,7 +39,7 @@ def plot_map(x, figsize, save_path, cbar=True, error=False):
     plt.close()
 
 
-def plot_predictions(x, plot_dir, sample_ids=None, gt=None, out_names=None, figsize=(6, 3), ext='png', error=False, prefix=''):
+def plot_predictions(x, plot_dir, sample_ids=None, gt=None, out_names=None, figsize=(6, 3), ext='png', error=False, prefix='', set_bounds=True):
     os.makedirs(plot_dir, exist_ok=True)
     if len(x.shape) == 3:
         x = np.expand_dims(x, axis=0)
@@ -48,10 +51,7 @@ def plot_predictions(x, plot_dir, sample_ids=None, gt=None, out_names=None, figs
         prefix = 'sample' if sample_ids else 'test'
     for i, pred in enumerate(x):
         for j, pred_v in enumerate(pred.transpose((2, 0, 1))):
-            if x.shape[0] == 1:
-                test_idx = ''
-            else:
-                test_idx = sample_ids[i] if sample_ids else i
+            test_idx = sample_ids[i] if sample_ids else i
             out_name = out_names[j] if out_names else 'out{}'.format(j)
             if gt is not None:
                 gt_filename = '{}{}_{}_gt.{}'.format(prefix, test_idx, out_name, ext)
@@ -59,7 +59,7 @@ def plot_predictions(x, plot_dir, sample_ids=None, gt=None, out_names=None, figs
             pred_filename = '{}{}_{}'.format(prefix, test_idx, out_name)
             pred_filename = pred_filename + '_error' if error else pred_filename
             pred_filename += '.{}'.format(ext)
-            plot_map(x[i, ..., j], figsize, osp.join(plot_dir, pred_filename), error=error)
+            plot_map(x[i, ..., j], figsize, osp.join(plot_dir, pred_filename), error=error, set_bounds=set_bounds)
 
 
 def plot_multi_res_error(exp_dir, out_names=None, figsize=(6, 3), ext='png'):
@@ -232,3 +232,13 @@ def plot_feature_importance(exp_dir, nhr_scores, out_names=None, ext='pdf'):
             os.makedirs(plot_dir, exist_ok=True)
             plt.savefig(osp.join(plot_dir, 'feature_importance_nhr{}.{}'.format(nhr_scores, ext)))
 
+
+def plot_losses(train_loss, val_loss, plot_dir, loss_name='', ext='png', start_idx=0, title=''):
+    plt.plot(list(range(1, len(train_loss) + 1))[start_idx:], train_loss[start_idx:])
+    plt.plot(list(range(1, len(val_loss) + 1))[start_idx:], val_loss[start_idx:])
+    plt.xlabel('Epoch')
+    plt.ylabel('{} loss'.format(loss_name))
+    plt.title(title)
+    plt.legend(['train', 'val'])
+    plt.tight_layout()
+    plt.savefig(osp.join(plot_dir, 'losses.{}'.format(ext)))
