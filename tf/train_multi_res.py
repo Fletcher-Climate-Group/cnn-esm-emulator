@@ -74,7 +74,9 @@ def train_multi_res(cfg):
     strategy = tf.distribute.OneDeviceStrategy('GPU:{}'.format(cfg['gpu']))
 
     with strategy.scope():
-        model = f09_model(train_x.shape[-1], train_y.shape[-1])
+        model = f09_model(train_x.shape[-1], train_y.shape[-1],
+                          train_cfg['width_mult'], train_cfg['kernel_size'],
+                          train_cfg['dropout'], train_cfg['double_layers'])
         train_ds = (tf.data.Dataset.from_tensor_slices((train_x, train_y))
                     .shuffle(500).repeat().batch(cfg['batch_size']))
         test_ds = tf.data.Dataset.from_tensor_slices((test_x, test_y)).batch(cfg['batch_size'])
@@ -119,6 +121,10 @@ if __name__ == '__main__':
     parser.add_argument('--batch-size', type=int, default=16)
     parser.add_argument('--lr', type=float, default=0.01)
     parser.add_argument('--epochs', type=int, default=200)
+    parser.add_argument('--width-mult', type=float, default=1.)
+    parser.add_argument('--kernel-size', type=int, default=5)
+    parser.add_argument('--dropout', type=float, default=0)
+    parser.add_argument('--double-layers', action='store_true')
     parser.add_argument('--save-models', action='store_true')
     parser.add_argument('--plot', action='store_true')
     parser.add_argument('--nhr-feat', type=int, nargs='+', default=[40])
@@ -152,6 +158,10 @@ if __name__ == '__main__':
         'batch_size': args.batch_size,
         'lr': args.lr,
         'epochs': args.epochs,
+        'width_mult': args.width_mult,
+        'kernel_size': args.kernel_size,
+        'dropout': args.dropout,
+        'double_layers': args.double_layers,
         'save_dir': exp_dir,
         'save': args.save_models
     }
