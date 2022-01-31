@@ -110,6 +110,7 @@ if __name__ == '__main__':
     parser.add_argument('--lr', type=float, default=0.01)
     parser.add_argument('--epochs', type=int, default=200)
     parser.add_argument('--save-models', action='store_true')
+    parser.add_argument('--plot', action='store_true')
     parser.add_argument('--nhr-feat', type=int, nargs='+', default=[40])
     args = parser.parse_args()
 
@@ -154,12 +155,13 @@ if __name__ == '__main__':
             with get_context("spawn").Pool(args.n_gpus) as p:
                 p.map(train_multi_res, cfgs)
 
-    print('Plotting Mean Error Maps...')
-    plot_multi_res_error(exp_dir, out_names=['AOD', 'CLDL', 'FNET', 'LWCF', 'PRECT', 'QRL', 'SWCF'])
+    if args.plot:
+        print('Plotting Mean Error Maps...')
+        plot_multi_res_error(exp_dir, out_names=['AOD', 'CLDL', 'FNET', 'LWCF', 'PRECT', 'QRL', 'SWCF'])
 
-    if args.save_models:
-        print('Plotting Feature Importance Scores...')
-        for nhr_feat in args.nhr_feat:
-            plot_feature_importance(exp_dir, nhr_feat,
-                                    out_names=['AOD', 'CLDL', 'FNET', 'LWCF', 'PRECT', 'QRL', 'SWCF'],
-                                    ext='png')
+        if args.save_models:
+            print('Plotting Feature Importance Scores...')
+            for nhr_feat in args.nhr_feat:
+                plot_feature_importance(exp_dir, nhr_feat,
+                                        out_names=['AOD', 'CLDL', 'FNET', 'LWCF', 'PRECT', 'QRL', 'SWCF'],
+                                        ext='png')
