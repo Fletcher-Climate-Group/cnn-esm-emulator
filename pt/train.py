@@ -31,6 +31,7 @@ if __name__ == '__main__':
     parser.add_argument('--lr', type=float, default=0.01)
     parser.add_argument('--epochs', type=int, default=500)
     parser.add_argument('--n-test', type=int, default=20)
+    parser.add_argument('--dropout', type=float, default=0, help='dropout rate')
     parser.add_argument('--loss', default='mse')
     parser.add_argument('--prob', action='store_true', help='probabilistic model with mean and variance')
     parser.add_argument('--name', default='')
@@ -68,9 +69,9 @@ if __name__ == '__main__':
 
     # Instantiate models
     if args.prob:
-        model = Prob_F09Net(train_x.shape[-1], train_y.shape[-1]).to(device)
+        model = Prob_F09Net(train_x.shape[-1], train_y.shape[-1], args.dropout).to(device)
     else:
-        model = F09Net(train_x.shape[-1], train_y.shape[-1]).to(device)
+        model = F09Net(train_x.shape[-1], train_y.shape[-1], args.dropout).to(device)
     summary(model, (9,))
 
     train_data = TensorDataset(torch.Tensor(train_x).to(device), torch.Tensor(train_y).to(device))
