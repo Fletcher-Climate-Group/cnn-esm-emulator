@@ -95,6 +95,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data-dir', default='data')
     parser.add_argument('--exp-dir', default='experiments/tf/multi-res')
+    parser.add_argument('--exp-name', default='')
     parser.add_argument('--n-gpus', type=int, default=4)
     parser.add_argument('--resize', default='bilinear')
     parser.add_argument('--res-ids', nargs='+', type=float, default=[1, 1/4, 1/16])
@@ -112,6 +113,9 @@ if __name__ == '__main__':
     parser.add_argument('--nhr-feat', type=int, nargs='+', default=[40])
     args = parser.parse_args()
 
+    exp_dir = osp.join(args.exp_dir, args.exp_name if args.exp_name else datetime.now().strftime("%Y-%m-%d-%H-%M"))
+    os.makedirs(exp_dir)
+
     assert args.n_trials % args.n_gpus == 0
     assert len(args.res_ids) == len(args.low_res + [args.high_res])
     for nhr_feat in args.nhr_feat:
@@ -119,8 +123,6 @@ if __name__ == '__main__':
 
     initialize_gpus()
 
-    exp_dir = osp.join(args.exp_dir, datetime.now().strftime("%Y-%m-%d-%H-%M"))
-    os.makedirs(exp_dir)
     with open(osp.join(exp_dir, 'args.yaml'), 'w') as f:
         yaml.safe_dump(vars(args), f)
 
