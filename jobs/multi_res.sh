@@ -3,7 +3,7 @@
 #SBATCH --gpus-per-node=4
 #SBATCH --time=6:00:0
 #SBATCH --job-name=default
-#SBATCH --output=%x.out
+#SBATCH --output=$SCRATCH/experiments/%x.out
 #SBATCH -p compute_full_node
 
 module load anaconda3
