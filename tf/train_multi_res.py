@@ -56,8 +56,17 @@ def train_multi_res(cfg):
         'seed': cfg['seed']
     }
 
-    train_x = np.concatenate((cfg['in_lr'], train_x_hr[:cfg['n_hr']]), axis=0)
-    train_y = np.concatenate((cfg['out_lr'], train_y_hr[:cfg['n_hr']]), axis=0)
+    if cfg['n_train'] > 0:
+        # remove random low/med res samples to keep consistent number of training examples
+        lr_shuffle = np.random.permutation(cfg['in_lr'].shape[0])
+        remove = cfg['in_lr'].shape[0] - cfg['n_train'] + cfg['n_hr']
+        in_lr = cfg['in_lr'][lr_shuffle[:-remove]]
+        out_lr = cfg['out_lr'][lr_shuffle[:-remove]]
+        train_x = np.concatenate((in_lr, train_x_hr[:cfg['n_hr']]), axis=0)
+        train_y = np.concatenate((out_lr, train_y_hr[:cfg['n_hr']]), axis=0)
+    else:
+        train_x = np.concatenate((cfg['in_lr'], train_x_hr[:cfg['n_hr']]), axis=0)
+        train_y = np.concatenate((cfg['out_lr'], train_y_hr[:cfg['n_hr']]), axis=0)
 
     test_y = test_y.transpose([0, 2, 3, 1])
     train_y = train_y.transpose([0, 2, 3, 1])
@@ -103,6 +112,7 @@ if __name__ == '__main__':
     parser.add_argument('--high-res', default='f09')
     parser.add_argument('--seed', type=int, default=0)
     parser.add_argument('--n-test', type=int, default=20)
+    parser.add_argument('--n-train', type=int, default=-1)
     parser.add_argument('--n-hr', type=int, nargs='+',
                         default=[0, 1, 2, 3, 4, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80])
     parser.add_argument('--n-trials', type=int, default=40)
@@ -117,10 +127,12 @@ if __name__ == '__main__':
     exp_dir = osp.join(args.exp_dir, args.exp_name if args.exp_name else datetime.now().strftime("%Y-%m-%d-%H-%M"))
     os.makedirs(exp_dir)
 
+    assert args.n_train <= 200
     assert args.n_trials % args.n_gpus == 0
     assert len(args.res_ids) == len(args.low_res + [args.high_res])
-    for nhr_feat in args.nhr_feat:
-        assert nhr_feat in args.n_hr
+    if args.plot:
+        for nhr_feat in args.nhr_feat:
+            assert nhr_feat in args.n_hr
 
     initialize_gpus()
 
@@ -136,6 +148,7 @@ if __name__ == '__main__':
         'out_lr': out_lr,
         'out_hr': out_hr,
         'n_test': args.n_test,
+        'n_train': args.n_train,
         'batch_size': args.batch_size,
         'lr': args.lr,
         'epochs': args.epochs,
