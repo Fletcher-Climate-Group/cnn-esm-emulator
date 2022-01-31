@@ -15,10 +15,20 @@ import yaml
 from time import time
 import pickle
 from utils.plots import plot_predictions, plot_losses
-from utils.losses import ss_loss
 
 import tempfile
 from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2_as_graph
+
+
+@tf.function
+def ss_loss(gt, pred, reduce_mean=True):
+    gt_mean = tf.reduce_mean(gt, axis=[1, 2], keepdims=True)
+    MSE = tf.reduce_mean((gt-pred)**2, axis=[1, 2])
+    MSE_norm = tf.reduce_mean((gt_mean - pred)**2, axis=[1, 2])
+    if reduce_mean:
+        return tf.reduce_mean(MSE / MSE_norm)
+    else:
+        return MSE / MSE_norm
 
 
 def get_flops(model, write_path=tempfile.NamedTemporaryFile().name):

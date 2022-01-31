@@ -9,7 +9,7 @@ import argparse
 import yaml
 from utils.data import get_data_lr_hr
 import tensorflow as tf
-from utils.losses import ss_loss
+from tf.train import ss_loss
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
