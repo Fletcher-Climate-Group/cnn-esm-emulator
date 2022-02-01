@@ -75,8 +75,8 @@ def train_multi_res(cfg):
 
     with strategy.scope():
         model = f09_model(train_x.shape[-1], train_y.shape[-1],
-                          train_cfg['width_mult'], train_cfg['kernel_size'],
-                          train_cfg['dropout'], train_cfg['double_layers'])
+                          cfg['width_mult'], cfg['kernel_size'],
+                          cfg['dropout'], cfg['double_layers'])
         train_ds = (tf.data.Dataset.from_tensor_slices((train_x, train_y))
                     .shuffle(500).repeat().batch(cfg['batch_size']))
         test_ds = tf.data.Dataset.from_tensor_slices((test_x, test_y)).batch(cfg['batch_size'])
