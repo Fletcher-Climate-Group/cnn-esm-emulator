@@ -16,6 +16,7 @@ from time import time
 import pickle
 from utils.plots import plot_predictions, plot_losses
 from utils.losses import ss_loss
+from tf.nets import f45_model, f19_model, f09_model
 
 import tempfile
 from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2_as_graph
@@ -36,90 +37,12 @@ def get_flops(model, write_path=tempfile.NamedTemporaryFile().name):
         return flops.total_float_ops / 2  # divide by two for fused multiply-accumulate
 
 
-def f09_model(in_c=9, out_c=7, w=1, k=5, dr=0, double=False):
-    """
-    :param in_c: input channels (9 ESM parameters)
-    :param out_c: output channels (7 ESM variables)
-    :param w: width multiplier (scale base number of filters)
-    :param k: kernel size
-    :param dr: dropout rate
-    :param double: double layers
-    :return: f09 CNN
-    """
-    model = tf.keras.Sequential()
-
-    model.add(layers.Dense(6*9*int(256*w), use_bias=False, input_shape=(in_c,)))
-    model.add(layers.BatchNormalization())
-    model.add(layers.LeakyReLU())
-    model.add(layers.Dropout(dr))
-
-    model.add(layers.Reshape((6, 9, int(256*w))))
-
-    model.add(layers.Conv2DTranspose(int(128*w), k, strides=(1, 1), padding='same', use_bias=False))
-    model.add(layers.BatchNormalization())
-    model.add(layers.LeakyReLU())
-    model.add(layers.Dropout(dr))
-
-    if double:
-        model.add(layers.Conv2DTranspose(int(128 * w), k, strides=(1, 1), padding='same', use_bias=False))
-        model.add(layers.BatchNormalization())
-        model.add(layers.LeakyReLU())
-        model.add(layers.Dropout(dr))
-
-    model.add(layers.Conv2DTranspose(int(64*w), k, strides=(2, 2), padding='same', use_bias=False))
-    model.add(layers.BatchNormalization())
-    model.add(layers.LeakyReLU())
-    model.add(layers.Dropout(dr))
-
-    if double:
-        model.add(layers.Conv2DTranspose(int(64 * w), k, strides=(1, 1), padding='same', use_bias=False))
-        model.add(layers.BatchNormalization())
-        model.add(layers.LeakyReLU())
-        model.add(layers.Dropout(dr))
-
-    model.add(layers.Conv2DTranspose(int(64*w), k, strides=(2, 2), padding='same', use_bias=False))
-    model.add(layers.BatchNormalization())
-    model.add(layers.LeakyReLU())
-    model.add(layers.Dropout(dr))
-
-    if double:
-        model.add(layers.Conv2DTranspose(int(64 * w), k, strides=(1, 1), padding='same', use_bias=False))
-        model.add(layers.BatchNormalization())
-        model.add(layers.LeakyReLU())
-        model.add(layers.Dropout(dr))
-
-    model.add(layers.Conv2DTranspose(int(32*w), k, strides=(2, 2), padding='same', use_bias=False))
-    model.add(layers.BatchNormalization())
-    model.add(layers.LeakyReLU())
-    model.add(layers.Dropout(dr))
-
-    if double:
-        model.add(layers.Conv2DTranspose(int(32 * w), k, strides=(1, 1), padding='same', use_bias=False))
-        model.add(layers.BatchNormalization())
-        model.add(layers.LeakyReLU())
-        model.add(layers.Dropout(dr))
-
-    model.add(layers.Conv2DTranspose(int(32*w), k, strides=(2, 2), padding='same', use_bias=False))
-    model.add(layers.BatchNormalization())
-    model.add(layers.LeakyReLU())
-    model.add(layers.Dropout(dr))
-
-    if double:
-        model.add(layers.Conv2DTranspose(int(32 * w), k, strides=(1, 1), padding='same', use_bias=False))
-        model.add(layers.BatchNormalization())
-        model.add(layers.LeakyReLU())
-        model.add(layers.Dropout(dr))
-
-    model.add(layers.Conv2DTranspose(out_c, k, strides=(2, 2), padding='same'))
-
-    return model
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data-dir', default='data')
     parser.add_argument('--exp-dir', default='experiments/tf/single-res')
     parser.add_argument('--exp-name', default='')
+    parser.add_argument('--res', default='f09', help='one of f09, f19, or f45')
     parser.add_argument('--batch', type=int, default=8)
     parser.add_argument('--lr', type=float, default=0.01)
     parser.add_argument('--epochs', type=int, default=500)
@@ -133,18 +56,21 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=0)
     args = parser.parse_args()
 
+    assert args.res in ['f09', 'f19', 'f45']
+    model_dict = {'f09': f09_model, 'f19': f19_model, 'f45': f45_model}
+    assert args.kernel_size in [1, 3, 5, 7], 'kernel size must be one of [1, 3, 5, 7]'
+
     exp_dir = osp.join(args.exp_dir, args.exp_name if args.exp_name else datetime.now().strftime("%Y-%m-%d-%H-%M"))
+    # exp_dir += '_{}'.format(args.res)
     if osp.exists(exp_dir):
         print('{} exists already'.format(exp_dir))
         sys.exit()
     os.makedirs(exp_dir)
 
-    assert args.kernel_size in [1, 3, 5, 7], 'kernel size must be one of [1, 3, 5, 7]'
-
     np.random.seed(args.seed)
     tf.random.set_seed(args.seed)
 
-    inputs, outputs, norm_inputs, norm_outputs, parent_maps = load_data(args.data_dir, 'f09', 'sstref')
+    inputs, outputs, norm_inputs, norm_outputs, parent_maps = load_data(args.data_dir, args.res, 'sstref')
 
     shuffle = np.random.permutation(inputs.shape[0])
     test_idx = shuffle[:args.n_test]
@@ -167,9 +93,9 @@ if __name__ == '__main__':
     spe = int(np.ceil(train_x.shape[0] // args.batch))
     lr = tf.keras.experimental.CosineDecay(args.lr, spe * args.epochs)
     optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
-    model = f09_model(train_x.shape[-1], train_y.shape[-1],
-                      w=args.width_mult, k=args.kernel_size,
-                      dr=args.dropout, double=args.double_layers)
+    model = model_dict[args.res](train_x.shape[-1], train_y.shape[-1],
+                                 w=args.width_mult, k=args.kernel_size,
+                                 dr=args.dropout, double=args.double_layers)
     model.summary()
 
     if args.loss == 'ss':

@@ -2,7 +2,7 @@ from multiprocessing import get_context
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
-from train import f09_model
+from tf.nets import f09_model
 
 import argparse
 import yaml
