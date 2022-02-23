@@ -18,13 +18,16 @@ def plot_map(x, figsize, save_path, cbar=True, error=False, set_bounds=True):
     assert len(x.shape) == 2, 'can only plot 2d map, len(x.shape) != 2'
     plt.figure(figsize=figsize)
     ax = plt.axes(projection=ccrs.Mollweide(central_longitude=180))
-    if set_bounds:
-        if error:
-            vmin, vmax = -0.2, 0.2
-        else:
-            vmin, vmax = 0, 1
+    if type(set_bounds) == list or type(set_bounds) == tuple:
+        vmin, vmax = set_bounds
     else:
-        vmin, vmax = None, None
+        if set_bounds:
+            if error:
+                vmin, vmax = -0.2, 0.2
+            else:
+                vmin, vmax = 0, 1
+        else:
+            vmin, vmax = None, None
     im = ax.imshow(x,
         transform=ccrs.PlateCarree(central_longitude=180),
         extent=[-180, 180, -90, 90],
@@ -55,7 +58,7 @@ def plot_predictions(x, plot_dir, sample_ids=None, gt=None, out_names=None, figs
             out_name = out_names[j] if out_names else 'out{}'.format(j)
             if gt is not None:
                 gt_filename = '{}{}_{}_gt.{}'.format(prefix, test_idx, out_name, ext)
-                plot_map(gt[i, ..., j], figsize, osp.join(plot_dir, gt_filename))
+                plot_map(gt[i, ..., j], figsize, osp.join(plot_dir, gt_filename), set_bounds=set_bounds)
             pred_filename = '{}{}_{}'.format(prefix, test_idx, out_name)
             pred_filename = pred_filename + '_error' if error else pred_filename
             pred_filename += '.{}'.format(ext)

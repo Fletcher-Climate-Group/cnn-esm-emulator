@@ -1,3 +1,8 @@
+import sys
+from pathlib import Path
+FILE = Path(__file__).absolute()
+sys.path.append(FILE.parents[1].as_posix())  # add project folder to path
+
 import os, os.path as osp
 import pickle
 import numpy as np
