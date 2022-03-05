@@ -1,3 +1,8 @@
+import sys
+from pathlib import Path
+FILE = Path(__file__).absolute()
+sys.path.append(FILE.parents[1].as_posix())  # add project folder to path
+
 from multiprocessing import get_context
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -60,8 +65,8 @@ def train_multi_res(cfg):
         # remove random low/med res samples to keep consistent number of training examples
         lr_shuffle = np.random.permutation(cfg['in_lr'].shape[0])
         remove = cfg['in_lr'].shape[0] - cfg['n_train'] + cfg['n_hr']
-        in_lr = cfg['in_lr'][lr_shuffle[:-remove]]
-        out_lr = cfg['out_lr'][lr_shuffle[:-remove]]
+        in_lr = cfg['in_lr'][lr_shuffle[remove:]]
+        out_lr = cfg['out_lr'][lr_shuffle[remove:]]
         train_x = np.concatenate((in_lr, train_x_hr[:cfg['n_hr']]), axis=0)
         train_y = np.concatenate((out_lr, train_y_hr[:cfg['n_hr']]), axis=0)
     else:
