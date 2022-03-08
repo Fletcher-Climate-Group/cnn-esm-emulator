@@ -6,6 +6,7 @@ gdown
 torch
 tqdm
 torchsummary
+natsort
 
 # for xesmf (patch and conservative regridding)
 # esmpy
