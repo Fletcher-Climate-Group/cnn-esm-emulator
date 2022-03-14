@@ -14,7 +14,7 @@ from utils.losses import ss_loss
 from utils.plots import plot_predictions
 
 # directory holding model .h5 file and meta data
-MODEL_DIR = 'experiments/tf/single-res/hp_search/combo_2'
+MODEL_DIR = 'experiments/tf/single-res/base_ss'
 PLOT_DIR = osp.join(MODEL_DIR, 'denorm_plots')
 RES = 'f09'
 
@@ -52,9 +52,10 @@ denorm_preds = denormalize(outputs.copy(), preds.copy())  # denormalize using al
 denorm_preds = np.transpose(denorm_preds, (0, 2, 3, 1))  # channels last for plotting
 gt = np.transpose(outputs[test_idx], (0, 2, 3, 1))  # unnormalized gt
 
-plot_predictions(x=denorm_preds[1:2],  # second test sample
+plot_predictions(x=denorm_preds[:1],  # second test sample
                  plot_dir=PLOT_DIR,
-                 sample_ids=test_idx[1:2],
-                 gt=gt[1:2],
+                 sample_ids=test_idx[:1],
+                 gt=gt[:1],
                  out_names=['AOD', 'CLDL', 'FNET', 'LWCF', 'PRECT', 'QRL', 'SWCF'],
-                 set_bounds=False)
+                 set_bounds='gt',
+                 ss_mse_name=True)

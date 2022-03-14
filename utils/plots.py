@@ -42,7 +42,8 @@ def plot_map(x, figsize, save_path, cbar=True, error=False, set_bounds=True):
     plt.close()
 
 
-def plot_predictions(x, plot_dir, sample_ids=None, gt=None, out_names=None, figsize=(6, 3), ext='png', error=False, prefix='', set_bounds=True):
+def plot_predictions(x, plot_dir, sample_ids=None, gt=None, out_names=None, figsize=(6, 3), ext='png',
+                     error=False, prefix='', set_bounds=True, ss_mse_name=False):
     os.makedirs(plot_dir, exist_ok=True)
     if len(x.shape) == 3:
         x = np.expand_dims(x, axis=0)
@@ -56,13 +57,26 @@ def plot_predictions(x, plot_dir, sample_ids=None, gt=None, out_names=None, figs
         for j, pred_v in enumerate(pred.transpose((2, 0, 1))):
             test_idx = sample_ids[i] if sample_ids else i
             out_name = out_names[j] if out_names else 'out{}'.format(j)
+            if set_bounds == 'gt' and gt is not None:
+                vmin, vmax = np.min(gt[i, ..., j]), np.max(gt[i, ..., j])
+                set_bounds_gt = (vmin, vmax)
             if gt is not None:
                 gt_filename = '{}{}_{}_gt.{}'.format(prefix, test_idx, out_name, ext)
-                plot_map(gt[i, ..., j], figsize, osp.join(plot_dir, gt_filename), set_bounds=set_bounds)
+                if set_bounds == 'gt' and gt is not None:
+                    plot_map(gt[i, ..., j], figsize, osp.join(plot_dir, gt_filename), set_bounds=set_bounds_gt)
+                else:
+                    plot_map(gt[i, ..., j], figsize, osp.join(plot_dir, gt_filename), set_bounds=set_bounds)
             pred_filename = '{}{}_{}'.format(prefix, test_idx, out_name)
             pred_filename = pred_filename + '_error' if error else pred_filename
+            if ss_mse_name:  # include ss and mse in filename
+                ss = 1 - ss_loss(np.float32(gt[i:i+1, ..., j:j+1]), x[i:i+1, ..., j:j+1]).numpy()
+                mse = np.mean((gt[i:i+1, ..., j:j+1] - x[i:i+1, ..., j:j+1])**2)
+                pred_filename += '_ss{:.3f}_mse{:.3e}'.format(ss, mse)
             pred_filename += '.{}'.format(ext)
-            plot_map(x[i, ..., j], figsize, osp.join(plot_dir, pred_filename), error=error, set_bounds=set_bounds)
+            if set_bounds == 'gt' and gt is not None:
+                plot_map(x[i, ..., j], figsize, osp.join(plot_dir, pred_filename), error=error, set_bounds=set_bounds_gt)
+            else:
+                plot_map(x[i, ..., j], figsize, osp.join(plot_dir, pred_filename), error=error, set_bounds=set_bounds)
 
 
 def plot_multi_res_error(exp_dir, out_names=None, figsize=(6, 3), ext='png'):
